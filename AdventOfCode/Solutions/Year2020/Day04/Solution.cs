@@ -23,7 +23,7 @@ namespace AdventOfCode.Solutions.Year2020
 
         private static readonly string[] ValidEyeColorCodes =
         {
-            "amb", "blu", "brn", "gry", "grn", "hzl", "oth"
+            "amb","blu", "brn", "gry", "grn", "hzl", "oth", 
         };
         
         public Day04() : base(04, 2020, "Passport Processing")
@@ -81,7 +81,7 @@ namespace AdventOfCode.Solutions.Year2020
                     switch (fieldName)
                     {
                         case "byr":
-                            if ((1920 <= yearToValidate) && (yearToValidate <= 2020)) validationToggle = true;
+                            if ((1920 <= yearToValidate) && (yearToValidate <= 2002)) validationToggle = true;
                             break;
                         case "iyr":
                             if ((2010 <= yearToValidate) && (yearToValidate <= 2020)) validationToggle = true;
@@ -91,9 +91,16 @@ namespace AdventOfCode.Solutions.Year2020
                             break;
                         case "hgt":
                             var unit = valueToValidate[^2..];
-                            var height = int.Parse(valueToValidate[..^2]);
-                            if ((unit == "cm") && ((150 <= height) && (height <= 193))); validationToggle = true;
-                            if ((unit == "ft") && ((59 <= height) && (height <= 76))); validationToggle = true;
+                            var __ = int.TryParse(valueToValidate[..^2], out var height);
+                            switch (unit)
+                            {
+                                case "cm" when ((150 <= height) && (height <= 193)):
+                                    validationToggle = true;
+                                    break;
+                                case "in" when ((59 <= height) && (height <= 76)):
+                                    validationToggle = true;
+                                    break;
+                            }
                             break;
                         case "hcl":
                             var hclRegex = new Regex(@"^#[0-9a-f]{6}$");
@@ -115,4 +122,3 @@ namespace AdventOfCode.Solutions.Year2020
         }
     }
 }
-
