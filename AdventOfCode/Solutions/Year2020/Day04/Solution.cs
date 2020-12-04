@@ -81,7 +81,7 @@ namespace AdventOfCode.Solutions.Year2020
                     switch (fieldName)
                     {
                         case "byr":
-                            if ((1920 <= yearToValidate) && (yearToValidate <= 2020)) validationToggle = true;
+                            if ((1920 <= yearToValidate) && (yearToValidate <= 2002)) validationToggle = true;
                             break;
                         case "iyr":
                             if ((2010 <= yearToValidate) && (yearToValidate <= 2020)) validationToggle = true;
@@ -91,9 +91,9 @@ namespace AdventOfCode.Solutions.Year2020
                             break;
                         case "hgt":
                             var unit = valueToValidate[^2..];
-                            var height = int.Parse(valueToValidate[..^2]);
+                            var __ = int.TryParse(valueToValidate[..^2], out var height);
                             if ((unit == "cm") && ((150 <= height) && (height <= 193))); validationToggle = true;
-                            if ((unit == "ft") && ((59 <= height) && (height <= 76))); validationToggle = true;
+                            if ((unit == "in") && ((59 <= height) && (height <= 76))); validationToggle = true;
                             break;
                         case "hcl":
                             var hclRegex = new Regex(@"^#[0-9a-f]{6}$");
@@ -110,9 +110,8 @@ namespace AdventOfCode.Solutions.Year2020
                     if (validationToggle) passportFields.Add(fieldName);
                 }
             }
-            
+
             return counterValidPassports.ToString();
         }
     }
 }
-
