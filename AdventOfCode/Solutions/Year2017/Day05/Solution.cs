@@ -1,26 +1,47 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace AdventOfCode.Solutions.Year2017
 {
 
     class Day05 : ASolution
     {
-
-        public Day05() : base(05, 2017, "")
+        private string[] InputJumps;
+        public Day05() : base(05, 2017, "A Maze of Twisty Trampolines, All Alike")
         {
-
+            InputJumps = Input.SplitByNewline(true).ToArray();
         }
 
         protected override string SolvePartOne()
         {
-            return null;
+            var currentPosition = 0;
+            var stepsTaken = 0;
+            var availableJumps = InputJumps.Select(int.Parse).ToArray();
+            while (currentPosition >= 0 && currentPosition < availableJumps.Length)
+            {
+                var nextJump = availableJumps[currentPosition];
+                availableJumps[currentPosition]++;
+                currentPosition += nextJump;
+                stepsTaken++;
+
+            }
+            return stepsTaken.ToString();
         }
 
         protected override string SolvePartTwo()
         {
-            return null;
+            var currentPosition = 0;
+            var stepsTaken = 0;
+            var availableJumps = InputJumps.Select(int.Parse).ToArray();
+            while (currentPosition >= 0 && currentPosition < availableJumps.Length)
+            {
+                var nextJump = availableJumps[currentPosition];
+                if (nextJump < 3) availableJumps[currentPosition]++;			
+                else availableJumps[currentPosition]--;
+                currentPosition += nextJump;
+                stepsTaken++;
+            }
+
+            return stepsTaken.ToString();
         }
     }
 }
