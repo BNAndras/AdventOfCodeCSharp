@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Solutions.Year2020
 {
 
     class Day04 : ASolution
     {
-        private static List<List<string>> PassportLinesOfLines;
+        private static List<string> PassportLines;
 
         private static readonly HashSet<string> RequiredFields =
         new HashSet<string>() {
@@ -19,18 +20,25 @@ namespace AdventOfCode.Solutions.Year2020
         {
             "cid"
         };
+
+        private static readonly string[] ValidEyeColorCodes =
+        {
+            "amb", "blu", "brn", "gry", "grn", "hzl", "oth"
+        };
         
         public Day04() : base(04, 2020, "Passport Processing")
         {
+            var lines = Input.Split(Environment.NewLine).ToList();
+            lines.Add(string.Empty);
+            PassportLines = lines;
         }
 
         protected override string SolvePartOne()
         {
-            var lines = Input.Split(Environment.NewLine).ToList();
-            lines.Add(string.Empty);
+
             var counterValidPassports = 0;
             var passportFields = new List<string>();
-            foreach (var line in lines)
+            foreach (var line in PassportLines)
             {
                 var distinctPassportFields = new HashSet<string>(passportFields);
                 if (line == string.Empty && distinctPassportFields.SetEquals(RequiredFields)) counterValidPassports++;
@@ -52,7 +60,58 @@ namespace AdventOfCode.Solutions.Year2020
 
         protected override string SolvePartTwo()
         {
-            return null;
+            var counterValidPassports = 0;
+            var passportFields = new List<string>();
+            foreach (var line in PassportLines)
+            {
+                var distinctPassportFields = new HashSet<string>(passportFields);
+                if (line == string.Empty && distinctPassportFields.SetEquals(RequiredFields)) counterValidPassports++;
+                if (line == string.Empty)
+                {
+                    passportFields = new List<string>();
+                    continue;
+                }
+
+                foreach (var segment in line.Split(" "))
+                {
+                    var fieldName = segment.Split(':')[0];
+                    var valueToValidate = segment.Split(':')[1];
+                    var validationToggle = false;
+                    var _ = int.TryParse(valueToValidate, out var yearToValidate);
+                    switch (fieldName)
+                    {
+                        case "byr":
+                            if ((1920 <= yearToValidate) && (yearToValidate <= 2020)) validationToggle = true;
+                            break;
+                        case "iyr":
+                            if ((2010 <= yearToValidate) && (yearToValidate <= 2020)) validationToggle = true;
+                            break;
+                        case "eyr":
+                            if ((2020 <= yearToValidate) && (yearToValidate <= 2030)) validationToggle = true;
+                            break;
+                        case "hgt":
+                            var unit = valueToValidate[^2..];
+                            var height = int.Parse(valueToValidate[..^2]);
+                            if ((unit == "cm") && ((150 <= height) && (height <= 193))); validationToggle = true;
+                            if ((unit == "ft") && ((59 <= height) && (height <= 76))); validationToggle = true;
+                            break;
+                        case "hcl":
+                            var hclRegex = new Regex(@"^#[0-9a-f]{6}$");
+                            if (hclRegex.IsMatch(valueToValidate)) validationToggle = true;
+                            break;
+                        case "ecl":
+                            if (ValidEyeColorCodes.Contains(valueToValidate)) validationToggle = true;
+                            break;
+                        case "pid":
+                            var pidRegex = new Regex(@"^\d{9}$");
+                            if (pidRegex.IsMatch(valueToValidate)) validationToggle = true;
+                            break;
+                    }
+                    if (validationToggle) passportFields.Add(fieldName);
+                }
+            }
+            
+            return counterValidPassports.ToString();
         }
     }
 }
