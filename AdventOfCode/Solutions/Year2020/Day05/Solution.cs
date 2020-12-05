@@ -1,51 +1,49 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AdventOfCode.Solutions.Year2020
 {
 
     class Day05 : ASolution
     {
-        private static string[] SeatIDSequences;
-        public Day05() : base(05, 2020, "")
+        private static List<int> _seatIdSequences;
+        public Day05() : base(05, 2020, "Binary Boarding")
         {
-            // FBFBBFFRLR equals 357, but 357 in base 2 is ..
-            // 0101100101
             var lines = Input.SplitByNewline();
+            var seatIdSequencesNumbered = new List<int>();
             for (var i = 0; i < lines.Length; i++)
             {
-                lines[i] = lines[i].Replace('F', '0').Replace('B', '1').Replace('R', '1').Replace('L', '0');
+                // FBFBBFFRLR
+                // 0101100101
+                // 357
+                lines[i] = lines[i].Replace('F', '0')
+                    .Replace('B', '1')
+                    .Replace('R', '1')
+                    .Replace('L', '0');
+                seatIdSequencesNumbered.Add(Convert.ToInt32(lines[i], fromBase: 2));
             }
 
-            SeatIDSequences = lines;
+            _seatIdSequences = seatIdSequencesNumbered;
         }
 
         protected override string SolvePartOne()
         {
-            var highestSeatId = 0;
-            foreach (var seatIdSequence in SeatIDSequences)
-            {
-                var currentSeatId = Convert.ToInt32(seatIdSequence, fromBase: 2);
-                if (currentSeatId > highestSeatId) highestSeatId = currentSeatId;
-            }
-            return highestSeatId.ToString();
+            return _seatIdSequences.Max().ToString();
         }
 
         protected override string SolvePartTwo()
         {
-            var takenSeats = new List<int>();
-            foreach (var seatIdSequence in SeatIDSequences)
+            // BBBBBBBRRR (first)        BBBBBBBRRR (last)
+            // 0000000111                1111111000 
+            // 7                         1016
+            for (var currentSeatId = 8; currentSeatId < 1016; currentSeatId++)
             {
-                takenSeats.Add(Convert.ToInt32(seatIdSequence, fromBase: 2));
-            }
-            // BBBBBBBRRR last seat
-            // 1111111000 = 1016
-            for (var currentSeatId = 0; currentSeatId < 1016; currentSeatId++)
-            {
-                if (takenSeats.Contains(currentSeatId - 1) && takenSeats.Contains(currentSeatId + 1) && !takenSeats.Contains(currentSeatId))
-                {
-                    return currentSeatId.ToString();
-                }
+                if (
+                    _seatIdSequences.Contains(currentSeatId - 1)
+                    && _seatIdSequences.Contains(currentSeatId + 1)
+                    && !_seatIdSequences.Contains(currentSeatId)
+                    ) return currentSeatId.ToString();
             }
 
             return "";
