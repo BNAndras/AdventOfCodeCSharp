@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Solutions.Year2020
 {
@@ -8,20 +9,20 @@ namespace AdventOfCode.Solutions.Year2020
     class Day05 : ASolution
     {
         private static List<int> _seatIdSequences;
+
+        private static readonly Dictionary<string, string> _charsToReplace = new Dictionary<string, string>()
+        {
+            {"F", "0"}, {"B", "1"}, {"L", "0"}, {"R", "1"}
+        };
         public Day05() : base(05, 2020, "Binary Boarding")
         {
             var lines = Input.SplitByNewline();
             var seatIdSequencesNumbered = new List<int>();
-            for (var i = 0; i < lines.Length; i++)
+            foreach (var line in lines)
             {
-                // FBFBBFFRLR
-                // 0101100101
-                // 357
-                lines[i] = lines[i].Replace('F', '0')
-                    .Replace('B', '1')
-                    .Replace('R', '1')
-                    .Replace('L', '0');
-                seatIdSequencesNumbered.Add(Convert.ToInt32(lines[i], fromBase: 2));
+                // FBFBBFFRLR = 0101100101 = 357
+                var seatIdSequence = MultipleReplace(line, _charsToReplace);
+                seatIdSequencesNumbered.Add(Convert.ToInt32(seatIdSequence, fromBase: 2));
             }
 
             _seatIdSequences = seatIdSequencesNumbered;
@@ -47,6 +48,14 @@ namespace AdventOfCode.Solutions.Year2020
             }
 
             return "";
+        }
+        
+        private static string MultipleReplace(string text, Dictionary<string, string> replacements) {
+            // https://metadeveloper.blogspot.com/2008/06/regex-replace-multiple-strings-in.html
+            return Regex.Replace(text, 
+                "(" + string.Join("|", replacements.Keys.ToArray()) + ")",
+                m => replacements[m.Value]
+            );
         }
     }
 }
