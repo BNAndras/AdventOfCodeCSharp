@@ -18,9 +18,9 @@ namespace AdventOfCode.Solutions.Year2020
                 // 0101100101
                 // 357
                 lines[i] = lines[i].Replace('F', '0')
+                    .Replace('L', '0')
                     .Replace('B', '1')
-                    .Replace('R', '1')
-                    .Replace('L', '0');
+                    .Replace('R', '1');
                 seatIdSequencesNumbered.Add(Convert.ToInt32(lines[i], fromBase: 2));
             }
 
