@@ -46,7 +46,7 @@ namespace AdventOfCode.Solutions.Year2020
                     && _seatIdSequences.Contains(currentSeatId + 1)
                 ) return currentSeatId.ToString();
             }
-
+            
             return "";
         }
         
