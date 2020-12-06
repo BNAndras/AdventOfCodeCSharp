@@ -10,7 +10,7 @@ namespace AdventOfCode.Solutions.Year2020
     {
         private static List<int> _seatIdSequences;
 
-        private static readonly Dictionary<string, string> _charsToReplace = new Dictionary<string, string>()
+        private static readonly Dictionary<string, string> CharsToReplace = new Dictionary<string, string>()
         {
             {"F", "0"}, {"B", "1"}, {"L", "0"}, {"R", "1"}
         };
@@ -21,7 +21,7 @@ namespace AdventOfCode.Solutions.Year2020
             foreach (var line in lines)
             {
                 // FBFBBFFRLR = 0101100101 = 357
-                var seatIdSequence = MultipleReplace(line, _charsToReplace);
+                var seatIdSequence = MultipleReplace(line, CharsToReplace);
                 seatIdSequencesNumbered.Add(Convert.ToInt32(seatIdSequence, fromBase: 2));
             }
 
